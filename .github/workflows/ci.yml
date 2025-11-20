@@ -77,8 +77,8 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.organization=yeheskhielprasetyo123
-            -Dsonar.projectKey=yeheskhielprasetyo123_tugas-project-digital-skola-devops-sesi31
+            -Dsonar.organization=yeheskhielprasetyo123-1
+            -Dsonar.projectKey=yeheskhielprasetyo123-1_tugas-project-digital-skola-devops-sesi31
             -Dsonar.projectName=tugas-project-digital-skola-devops-sesi31
             -Dsonar.sources=.
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
