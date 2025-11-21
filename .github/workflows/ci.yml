@@ -13,16 +13,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run ESLint
         run: npm run lint
 
@@ -32,56 +32,56 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run tests with coverage
         run: npm test
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage/lcov.info
 
-sonarqube:
-  name: SonarQube Analysis
-  runs-on: ubuntu-latest
-  needs: [lint, unit-test]
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [lint, unit-test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run tests with coverage
-      run: npm test
+      - name: Run tests with coverage
+        run: npm test
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v2
-      with:
-        projectBaseDir: .
-        args: >
-          -Dsonar.projectKey=yeheskhielprasetyo123_tugas-project-digital-skola-devops-sesi31
-          -Dsonar.organization=yeheskhielprasetyo123-1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=yeheskhielprasetyo123_tugas-project-digital-skola-devops-sesi31
+            -Dsonar.organization=yeheskhielprasetyo123-1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   k6-load-test:
     name: k6 Load Testing
@@ -90,25 +90,25 @@ sonarqube:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Start server in background
         run: |
           npm start &
           echo "Server starting..."
-      
+
       - name: Wait for server to start
         run: |
           timeout 30s bash -c 'until curl -s http://localhost:3000/notes > /dev/null; do sleep 1; done'
           echo "Server is ready!"
-      
+
       - name: Install k6
         run: |
           sudo apt-get update
@@ -118,7 +118,7 @@ sonarqube:
           echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
           sudo apt-get update
           sudo apt-get install -y k6
-      
+
       - name: Run k6 smoke test
         run: |
           k6 run --duration 30s --vus 5 loadtest/script.js
